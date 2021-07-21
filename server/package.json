@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon" : "nodemon app.js"
+    "nodemon": "nodemon app.js"
   },
   "keywords": [
     "Mukul"
@@ -13,6 +13,7 @@
   "author": "Mukul Chaudhary",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.13.3"
   }
 }
