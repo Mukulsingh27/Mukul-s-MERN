@@ -1,23 +1,16 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
-const port = process.env.PORT || 3000;
+const dotenv = require("dotenv");
 
-const db = `mongodb+srv://MukulSingh27:mukul7060888670@cms.3zoou.mongodb.net/webwithmukul?retryWrites=true&w=majority`;
+dotenv.config({ path: "./config.env" });
+require("./databse/connection");
+// const User = require("./model/schema");
+app.use(express.json());
 
-mongoose
-    .connect(db, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-    })
-    .then(() => {
-        console.log(`connection with mongodb successful !`);
-    })
-    .catch((err) => {
-        console.log(`OOPS , connection failed ?`);
-    });
+// linking the router files
+app.use(require("./router/auth"));
+
+const port = process.env.PORT;
 
 const middleware = (req, res, next) => {
     console.log("hi middleware");
