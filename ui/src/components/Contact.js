@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import ContactDetails from "./card/ContactDetails";
 import { Cdetails } from "./card/CardAPI";
-// import Form from './card/Form'
+import Form from "./card/Form";
 
 const Contact = () => {
     const imap =
@@ -70,7 +70,7 @@ const Contact = () => {
                     </div>
                 </div>
 
-                {/* <Form /> */}
+                <Form />
             </section>
         </>
     );

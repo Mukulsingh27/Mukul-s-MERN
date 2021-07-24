@@ -1,5 +1,5 @@
 import React from "react";
-import regbg from "../components/reg/bg.jpg";
+// import regbg from "../components/reg/bg.jpg";
 import "../components/reg/css/reg.css";
 import "../components/reg/css/util.css";
 import { NavLink } from "react-router-dom";
@@ -137,7 +137,7 @@ const Signup = () => {
 
                     <div
                         className="login100-more"
-                        style={{ backgroundImage: `url(${regbg})` }}
+                        // style={{ backgroundImage: `url(${regbg})` }}
                     ></div>
                 </div>
             </div>

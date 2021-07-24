@@ -1,9 +1,23 @@
 import React from "react";
-import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 import { NavLink } from "react-router-dom";
 import logo from "../components/images/logoMD.png";
 
 const Navbar = () => {
+    const btn = [
+        {
+            fontWeight: "600",
+            fontSize: "12px",
+            letterSpacing: "1px",
+            display: "inline-block",
+            padding: "10px 30px",
+            borderRadius: "50px",
+            transition: "0.5s",
+            color: "#fff",
+            border: "2px solid #538756",
+            background: "#538756",
+            textDecoration: "none",
+        },
+    ];
     return (
         <>
             <div className="container-fluid nav-bg">
@@ -95,6 +109,7 @@ const Navbar = () => {
                                             aria-label="Search"
                                         />
                                         <button
+                                            style={btn[0]}
                                             className="btn btn-outline-success"
                                             type="submit"
                                         >
