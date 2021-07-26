@@ -4,13 +4,14 @@ require("../databse/connection");
 const User = require("../model/schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authenticate = require("../middleware/authenticate");
 
 router.get("/", (req, res) => {
     res.send("Hello home rouetr");
 });
 
 //registed part
-router.post("/signup", (req, res) => {
+router.post("/register", (req, res) => {
     const { name, email, title, phone, dob, password, cpassword } = req.body;
     if (
         !name ||
@@ -66,7 +67,7 @@ router.post("/signin", async (req, res) => {
             const isMatch = await bcrypt.compare(password, userLogin.password);
 
             const token = await userLogin.generateAuthToken();
-            res.cookie("m_jwt", token, {
+            res.cookie("mjwt", token, {
                 expires: new Date(Date.now() + 3600000),
                 httpOnly: true,
             });
@@ -82,6 +83,47 @@ router.post("/signin", async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+});
+
+//about us
+router.get("/about", authenticate, (req, res) => {
+    res.send(req.rootUser);
+});
+
+router.get("/getData", authenticate, (req, res) => {
+    res.send(req.rootUser);
+});
+
+router.post("/contact", authenticate, async (req, res) => {
+    try {
+        const { name, email, phone, message } = req.body;
+        if (!name || !email || !phone || !message) {
+            return res.json({ error: "please fill the contact form" });
+        }
+
+        const userContact = await User.findOne({ _id: req.userId });
+
+        if (userContact) {
+            const userMessage = await userContact.addMessage(
+                name,
+                email,
+                phone,
+                message
+            );
+
+            await userContact.save();
+            res.status(201).json({ message: "message stored successfully" });
+        }
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+//logout page
+
+router.get("/logout", (req, res) => {
+    res.clearCookie("mjwt"), { path: "/" };
+    res.status(200).send("user successfull logged out");
 });
 
 module.exports = router;

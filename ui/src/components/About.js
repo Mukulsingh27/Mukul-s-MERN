@@ -1,27 +1,58 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, useHistory } from "react-router-dom";
 import CardAbout from "./card/CardAbout";
 
 const About = () => {
+    const history = useHistory();
+
+    const [userdata, setUserData] = useState({});
+    const callAboutPage = async () => {
+        try {
+            const res = await fetch("/about", {
+                method: "get",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+            const data = await res.json();
+            setUserData(data);
+
+            if (!res.status === 200) {
+                const error = new Error(res.error);
+                throw error;
+            }
+        } catch (e) {
+            console.log(e);
+            history.push("/login");
+        }
+    };
+
+    useEffect(() => {
+        callAboutPage();
+    }, []);
+
     return (
         <>
             <section id="header-about" className="d-flex align-items-center">
                 <div className="container-fluid">
                     <div className="row">
-                        <form>
+                        <form method="get">
                             <div className="col-10 mx-auto">
                                 <div className="row">
                                     <div className="col-md-6 pt-5 pt-lg-0 order-2 order-lg-2 d-flex flex-column justify-content-center">
                                         <h1>
-                                            About us{" "}
+                                            Hello{" "}
                                             <strong className="brand-name">
-                                                @Mukul
+                                                &nbsp;@{userdata.name}
                                             </strong>
                                         </h1>
-                                        <h4>web developer</h4>
+                                        <h4>{userdata.title}</h4>
                                         <h3 className="my-3">
                                             Hi, I'm Mukul Singh, from agra, i'm
                                             a front-end & full stack-developer.
+                                            welcome to Mukul's MERN
                                         </h3>
                                         <div className="mt-3">
                                             <NavLink
@@ -56,7 +87,7 @@ const About = () => {
                                                 <label>User Id</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>454545</p>
+                                                <p>{userdata._id}</p>
                                             </div>
                                         </div>
                                         <div className="row my-3">
@@ -64,7 +95,7 @@ const About = () => {
                                                 <label>Name</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>Mukul Singh</p>
+                                                <p>{userdata.name}</p>
                                             </div>
                                         </div>
                                         <div className="row my-3">
@@ -72,7 +103,7 @@ const About = () => {
                                                 <label>Email</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>mukulsingh3344@gmail.com</p>
+                                                <p>{userdata.email}</p>
                                             </div>
                                         </div>
                                         <div className="row my-3">
@@ -80,7 +111,7 @@ const About = () => {
                                                 <label>Phone</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>454545</p>
+                                                <p>{userdata.phone}</p>
                                             </div>
                                         </div>
                                         <div className="row my-3">
@@ -88,7 +119,7 @@ const About = () => {
                                                 <label>Profession</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>Student</p>
+                                                <p>{userdata.title}</p>
                                             </div>
                                         </div>
                                     </div>

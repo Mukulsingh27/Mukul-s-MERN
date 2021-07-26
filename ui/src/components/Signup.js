@@ -1,10 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 // import regbg from "../components/reg/bg.jpg";
 import "../components/reg/css/reg.css";
 import "../components/reg/css/util.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 const Signup = () => {
+    const history = useHistory();
+    const [user, setUser] = useState({
+        name: "",
+        email: "",
+        title: "",
+        phone: "",
+        dob: "",
+        password: "",
+        cpassword: "",
+    });
+
+    let name, value;
+    const userInput = (e) => {
+        name = e.target.name;
+        value = e.target.value;
+
+        setUser({ ...user, [name]: value });
+    };
+
+    const storeData = async (e) => {
+        e.preventDefault();
+        const { name, email, title, phone, dob, password, cpassword } = user;
+        const res = await fetch("/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                title,
+                phone,
+                dob,
+                password,
+                cpassword,
+            }),
+        });
+        const data = await res.json();
+
+        if (data.status === 422 || !data) {
+            window.alert("Invalid Registration");
+        } else {
+            window.alert("Successfull Registration");
+            history.push("/login");
+        }
+    };
     return (
         <>
             <div className="limiter">
@@ -28,8 +74,9 @@ const Signup = () => {
                                     type="text"
                                     name="name"
                                     id="name"
+                                    value={user.name}
+                                    onChange={userInput}
                                     placeholder="Name..."
-                                    autoComplete="off"
                                 />
                                 <span className="focus-input100"></span>
                             </div>
@@ -41,6 +88,8 @@ const Signup = () => {
                                     type="text"
                                     name="email"
                                     id="email"
+                                    value={user.email}
+                                    onChange={userInput}
                                     placeholder="Email address..."
                                 />
                                 <span className="focus-input100"></span>
@@ -53,8 +102,10 @@ const Signup = () => {
                                 <input
                                     className="input100"
                                     type="text"
-                                    name="work"
-                                    id="work"
+                                    name="title"
+                                    id="title"
+                                    value={user.title}
+                                    onChange={userInput}
                                     placeholder="title..."
                                 />
                                 <span className="focus-input100"></span>
@@ -69,6 +120,8 @@ const Signup = () => {
                                     type="number"
                                     name="phone"
                                     id="phone"
+                                    value={user.phone}
+                                    onChange={userInput}
                                     placeholder="Phone No..."
                                 />
                                 <span className="focus-input100"></span>
@@ -81,6 +134,8 @@ const Signup = () => {
                                     type="date"
                                     name="dob"
                                     id="dob"
+                                    value={user.dob}
+                                    onChange={userInput}
                                 />
                                 <span className="focus-input100"></span>
                             </div>
@@ -89,9 +144,11 @@ const Signup = () => {
                                 <span className="label-input100">Password</span>
                                 <input
                                     className="input100"
-                                    type="text"
+                                    type="password"
                                     name="password"
                                     id="password"
+                                    value={user.password}
+                                    onChange={userInput}
                                     placeholder="*************"
                                 />
                                 <span className="focus-input100"></span>
@@ -103,9 +160,11 @@ const Signup = () => {
                                 </span>
                                 <input
                                     className="input100"
-                                    type="text"
+                                    type="password"
                                     name="cpassword"
                                     id="cpassword"
+                                    value={user.cpassword}
+                                    onChange={userInput}
                                     placeholder="*************"
                                 />
                                 <span className="focus-input100"></span>
@@ -118,6 +177,7 @@ const Signup = () => {
                                         type="submit"
                                         name="signup"
                                         id="signup"
+                                        onClick={storeData}
                                         className="login100-form-btn"
                                     >
                                         Sign Up

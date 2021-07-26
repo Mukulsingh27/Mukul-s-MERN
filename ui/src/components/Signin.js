@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import regbg from "../components/reg/bg1.jpg";
 import "../components/reg/css/reg.css";
 import "../components/reg/css/util.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
+import { UserContext } from "../App";
 
 const Signin = () => {
+    const { state, dispatch } = useContext(UserContext);
+    const history = useHistory();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const loginUser = async (e) => {
+        e.preventDefault();
+
+        const res = await fetch("/signin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
+        const data = res.json();
+        if (res.status === 400 || !data) {
+            window.alert("Invalid Credentials");
+        } else {
+            dispatch({ type: "USER", payload: true });
+            window.alert("Login Successful");
+            history.push("/");
+        }
+    };
     return (
         <>
             <div className="limiter">
@@ -31,6 +59,8 @@ const Signin = () => {
                                     type="text"
                                     name="email"
                                     id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Email address..."
                                 />
                                 <span className="focus-input100"></span>
@@ -40,9 +70,13 @@ const Signin = () => {
                                 <span className="label-input100">Password</span>
                                 <input
                                     className="input100"
-                                    type="text"
+                                    type="password"
                                     name="password"
                                     id="password"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     placeholder="*************"
                                 />
                                 <span className="focus-input100"></span>
@@ -56,13 +90,14 @@ const Signin = () => {
                                         name="signup"
                                         id="signup"
                                         className="login100-form-btn"
+                                        onClick={loginUser}
                                     >
                                         Login
                                     </button>
                                 </div>
 
                                 <NavLink
-                                    to="/register"
+                                    to="/signup"
                                     className="dis-block txt3 hov1 p-r-30 p-t-10 p-b-10 p-l-30"
                                 >
                                     Sign in

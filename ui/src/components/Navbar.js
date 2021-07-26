@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../components/images/logoMD.png";
+import { UserContext } from "../App";
 
 const Navbar = () => {
     const btn = [
@@ -18,6 +19,80 @@ const Navbar = () => {
             textDecoration: "none",
         },
     ];
+
+    const { state, dispatch } = useContext(UserContext);
+
+    const RenderMenu = () => {
+        if (state) {
+            return (
+                <>
+                    <li className="nav-item">
+                        <NavLink
+                            className="nav-link active"
+                            aria-current="page"
+                            to="/"
+                        >
+                            Home
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/about">
+                            About
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/services">
+                            Services
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/contact">
+                            Contact
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/logout">
+                            Logout
+                        </NavLink>
+                    </li>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <li className="nav-item">
+                        <NavLink
+                            className="nav-link active"
+                            aria-current="page"
+                            to="/"
+                        >
+                            Home
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/about">
+                            About
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/services">
+                            Services
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/contact">
+                            Contact
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/login">
+                            Login
+                        </NavLink>
+                    </li>
+                </>
+            );
+        }
+    };
     return (
         <>
             <div className="container-fluid nav-bg">
@@ -49,47 +124,7 @@ const Navbar = () => {
                                     id="navbarSupportedContent"
                                 >
                                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                                        <li className="nav-item">
-                                            <NavLink
-                                                className="nav-link active"
-                                                aria-current="page"
-                                                to="/"
-                                            >
-                                                Home
-                                            </NavLink>
-                                        </li>
-                                        <li className="nav-item">
-                                            <NavLink
-                                                className="nav-link"
-                                                to="/about"
-                                            >
-                                                About
-                                            </NavLink>
-                                        </li>
-                                        <li className="nav-item">
-                                            <NavLink
-                                                className="nav-link"
-                                                to="/services"
-                                            >
-                                                Services
-                                            </NavLink>
-                                        </li>
-                                        <li className="nav-item">
-                                            <NavLink
-                                                className="nav-link"
-                                                to="/contact"
-                                            >
-                                                Contact
-                                            </NavLink>
-                                        </li>
-                                        <li className="nav-item">
-                                            <NavLink
-                                                className="nav-link"
-                                                to="/login"
-                                            >
-                                                Login
-                                            </NavLink>
-                                        </li>
+                                        <RenderMenu />
                                         {/* <li className="nav-item">
                                 <a
                                     className="nav-link disabled"

@@ -54,6 +54,39 @@ const userSchema = new mongoose.Schema({
         trim: true,
         minlength: 8,
     },
+    messages: [
+        {
+            name: {
+                type: String,
+                required: true,
+                maxlength: 30,
+                trim: true,
+            },
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                unique: [true, "Email alreday registered"],
+                validate(val) {
+                    if (!validator.isEmail(val)) {
+                        throw new Error("Invalid email");
+                    }
+                },
+            },
+            phone: {
+                type: Number,
+                required: true,
+                min: 10,
+                // unique: [true, "Phone Number alreday registered"],
+            },
+            message: {
+                type: String,
+                required: true,
+                maxlength: 300,
+                trim: true,
+            },
+        },
+    ],
     tokens: [
         {
             token: {
@@ -81,6 +114,18 @@ userSchema.methods.generateAuthToken = async function () {
         this.tokens = this.tokens.concat({ token: token });
         await this.save();
         return token;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+//store the message
+
+userSchema.methods.addMessage = async function (name, email, phone, message) {
+    try {
+        this.messages = this.messages.concat({ name, email, phone, message });
+        await this.save();
+        return this.messages;
     } catch (e) {
         console.log(e);
     }

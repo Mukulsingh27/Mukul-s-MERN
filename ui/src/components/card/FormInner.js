@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const FormInner = () => {
-    const [formData, setFormData] = useState({
-        fname: "",
-        phone: "",
-        email: "",
-        msg: "",
-    });
+    // const [formData, setFormData] = useState({
+    //     fname: "",
+    //     phone: "",
+    //     email: "",
+    //     msg: "",
+    // });
     const btn = [
         {
             fontWeight: "600",
@@ -24,30 +24,102 @@ const FormInner = () => {
         },
     ];
 
-    const inputEvent = (event) => {
-        const { name, value } = event.target;
+    // const inputEvent = (event) => {
+    //     const { name, value } = event.target;
 
-        setFormData((val) => {
-            return {
-                ...val,
-                [name]: value,
-            };
+    //     setFormData((val) => {
+    //         return {
+    //             ...val,
+    //             [name]: value,
+    //         };
+    //     });
+    // };
+
+    // const formSubmit = (e) => {
+    //     e.preventDefault();
+    //     Swal.fire(
+    //         "Thank you",
+    //         `${formData.fname} for contacting us, we'll revert back to you super soon !`,
+    //         "success"
+    //     );
+    //     setFormData("");
+    // };
+
+    const [userdata, setUserData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+    });
+    const callContactPage = async () => {
+        try {
+            const res = await fetch("/getData", {
+                method: "get",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await res.json();
+            setUserData({
+                ...userdata,
+                name: data.name,
+                email: data.email,
+                phone: data.phone,
+            });
+
+            if (!res.status === 200) {
+                const error = new Error(res.error);
+                throw error;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    useEffect(() => {
+        callContactPage();
+    }, []);
+
+    //storing user data
+    const userMessage = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setUserData({
+            ...userdata,
+            [name]: value,
         });
     };
 
-    const formSubmit = (e) => {
+    //sending data to beckend
+    const sendContactData = async (e) => {
         e.preventDefault();
-        Swal.fire(
-            "Thank you",
-            `${formData.fname} for contacting us, we'll revert back to you super soon !`,
-            "success"
-        );
-        setFormData("");
+        const { name, email, phone, message } = userdata;
+        const res = await fetch("/contact", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                phone,
+                message,
+            }),
+        });
+
+        const data = await res.json();
+        if (!data) {
+            console.log("message not sent");
+        } else {
+            alert("Message send");
+            setUserData({ ...userdata, message: "" });
+        }
     };
 
     return (
         <>
-            <form className="my-5" onSubmit={formSubmit}>
+            <form className="my-5" method="post">
                 <div className="mb-3">
                     <label
                         for="exampleFormControlInput1"
@@ -59,6 +131,8 @@ const FormInner = () => {
                         type="text"
                         className="form-control"
                         id="exampleFormControlInput1"
+                        value={userdata.name}
+                        onChange={userMessage}
                         placeholder="Enter your Full Name"
                         name="name"
                     />
@@ -76,6 +150,8 @@ const FormInner = () => {
                             type="number"
                             className="form-control"
                             id="exampleFormControlInput1"
+                            value={userdata.phone}
+                            onChange={userMessage}
                             placeholder="+91**********"
                             name="phone"
                         />
@@ -93,6 +169,8 @@ const FormInner = () => {
                             className="form-control"
                             id="exampleFormControlInput1"
                             placeholder="example@gmail.com"
+                            value={userdata.email}
+                            onChange={userMessage}
                             name="email"
                         />
                     </div>
@@ -110,11 +188,17 @@ const FormInner = () => {
                         className="form-control"
                         id="exampleFormControlTextarea1"
                         rows="3"
-                        name="msg"
+                        name="message"
+                        value={userdata.message}
+                        onChange={userMessage}
                     ></textarea>
                 </div>
                 <div className="col-12">
-                    <button style={btn[0]} type="submit">
+                    <button
+                        style={btn[0]}
+                        type="submit"
+                        onClick={sendContactData}
+                    >
                         Submit
                     </button>
                 </div>
